@@ -5,7 +5,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_clvtp"]
 shader = ExtResource("1_t66l1")
-shader_parameter/aspect_ratio = 0.985
+shader_parameter/aspect_ratio = 1.57
 
 [node name="Main" type="Node"]
 

@@ -2,31 +2,47 @@ shader_type canvas_item;
 
 uniform float aspect_ratio = 1.0;
 
+vec2 sinusoidal(vec2 c, float offset) {
+	c.x = sin(c.x + offset);
+	c.y = sin(c.y + offset);
+	
+	return c;
+}
+
+vec2 spherical(vec2 c, float offset) {
+	vec2 t = c;
+	c.x = c.x / (c.x * c.x + c.y * c.y) + offset;
+	c.y = c.y / (t.x * t.x + t.y * t.y) + offset;
+	
+	return c;
+}
+
+vec2 julia(vec2 c, vec2 p) {
+	int i = 0;
+	for (; i < 16; i++) {
+		if (c.x * c.x + c.y * c.y > 4.0) {
+			break;
+		}
+		float t = c.x * c.x - c.y * c.y + p.x;
+		c.y = 2.0 * c.x * c.y + p.y;
+		c.x = t;
+	}
+	return c * vec2(float(i)) / 16.0;
+}
+
 void fragment() {
-	// setup coordinates
+	// Setup the coordinate system.
 	vec2 c = UV;
 	c -= vec2(0.5, 0.5);
 	c.x *= aspect_ratio;
 	
-	// function after function!
-	c.x = sin(c.x);
-	c.y = sin(c.y);
+	// Apply functions randomly.
+	c = sinusoidal(c, 0.0);
+	c = julia(c, 0.6 * vec2(sin(TIME * 0.1), cos(TIME * 0.1)));
+	c = spherical(c, TIME);
+	//c = sinusoidal(c, TIME);
+	c = sinusoidal(c, 0.0);
 	
-	vec2 t = c;
-	c.x = c.x / (c.x * c.x + c.y * c.y) + TIME;
-	c.y = c.y / (t.x * t.x + t.y * t.y) + TIME;
-	
-	c.x = sin(c.x);
-	c.y = sin(c.y);
-	
-	
-	for (int i = 0; i < 3; i++) {
-		c.x = c.x * c.x + 2.0 * c.y * c.x + c.y * c.y;
-	}
-	
-	c.y = c.y * c.y - 2.0 * c.y * c.x + c.x * c.x;
-	t = c;
-	c.x = c.x / (c.x * c.x + c.y * c.y);
-	c.y = c.y / (t.x * t.x + t.y * t.y);
-	COLOR.rgb = vec3(c.x, c.y * c.x, c.y);
+	// Turn the final coordinate into a color.
+	COLOR.rgb = vec3(c.x, c.y + c.x, c.y);
 }
