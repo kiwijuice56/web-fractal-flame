@@ -27,7 +27,11 @@ vec2 julia(vec2 c, vec2 p) {
 		c.y = 2.0 * c.x * c.y + p.y;
 		c.x = t;
 	}
-	return c * vec2(float(i)) / 16.0;
+	
+	float modulus = sqrt(c.x * c.x + c.y * c.y);
+	float mu = max(0, (float(i) - log(log(modulus)) / log(2.0))) / 16.0;
+	
+	return c * vec2(mu);
 }
 
 void fragment() {
@@ -38,10 +42,10 @@ void fragment() {
 	
 	// Apply functions randomly.
 	c = sinusoidal(c, 0.0);
-	c = julia(c, 0.6 * vec2(sin(TIME * 0.1), cos(TIME * 0.1)));
+	c += julia(c, 0.6 * vec2(sin(TIME * 0.1), cos(TIME * 0.1)));
 	c = spherical(c, TIME);
-	//c = sinusoidal(c, TIME);
-	c = sinusoidal(c, 0.0);
+	c = sinusoidal(c, TIME);
+	c = spherical(c, 0.0);
 	
 	// Turn the final coordinate into a color.
 	COLOR.rgb = vec3(c.x, c.y + c.x, c.y);
