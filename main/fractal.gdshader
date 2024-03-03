@@ -16,15 +16,17 @@ void fragment() {
 	c.x = c.x / (c.x * c.x + c.y * c.y) + TIME;
 	c.y = c.y / (t.x * t.x + t.y * t.y) + TIME;
 	
-	c.x = sin(c.x + TIME) * 8.0;
-	c.y = sin(c.y + TIME) * 16.0;
+	c.x = sin(c.x);
+	c.y = sin(c.y);
 	
-	// c.x = mod(c.x, 16.0);
-	c.x = pow(c.x, c.x);
 	
+	for (int i = 0; i < 3; i++) {
+		c.x = c.x * c.x + 2.0 * c.y * c.x + c.y * c.y;
+	}
+	
+	c.y = c.y * c.y - 2.0 * c.y * c.x + c.x * c.x;
 	t = c;
 	c.x = c.x / (c.x * c.x + c.y * c.y);
 	c.y = c.y / (t.x * t.x + t.y * t.y);
-	
-	COLOR.rgb = vec3(0.0, c.y, c.x);
+	COLOR.rgb = vec3(c.x, c.y * c.x, c.y);
 }
