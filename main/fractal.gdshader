@@ -46,6 +46,7 @@ void fragment() {
 	c = spherical(c, TIME);
 	c = sinusoidal(c, TIME);
 	c = spherical(c, 0.0);
+	c = julia(c, c);
 	
 	// Turn the final coordinate into a color.
 	COLOR.rgb = vec3(c.x, c.y + c.x, c.y);
